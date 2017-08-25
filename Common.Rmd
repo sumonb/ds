@@ -1,0 +1,196 @@
+---
+title: "Common"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Import Libraries
+```{r eval = FALSE}
+library(tidyverse)
+
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(tidytext)
+library(ggplot2)
+library(igraph)
+library(ggraph)
+library(lubridate)
+
+```
+
+Convert a vector to a comma separated string
+```{r}
+ks_commas <- function(...) stringr::str_c(..., collapse = ",")
+```
+
+Print Header in the console
+```{r}
+ks_comment_info <- function(..., pad = "-")
+{
+  title <- paste0(...)
+  width <- getOption("width") - nchar(title) - 5
+  cat(title, " ", stringr::str_dup(pad,width), "\n", sep = "")
+}
+```
+
+Random sample
+```{r}
+#Sample ---------------------------------------------------------------------------------
+ks_ht <-  function(ds, n = 5, divider = '*')
+{
+  rbind(head(ds, n), tail(ds, n)) 
+}
+```
+
+Get top records from head and tail sorted by a column 
+```{r}
+ks_ht_mix_min<-  function(ds, col_name, n = 5, divider = '*')
+{
+ dplyr::union_all(
+  
+  #top - max - top records
+  ds %>%
+    arrange_(paste("desc(",col_name,")")) %>%
+    head(n),
+  #bottom - min - top records
+  (ds %>%
+    arrange_(col_name) %>%
+    head(n)) %>%
+    #again resort so that min one is at the bottom
+    arrange_(paste("desc(",col_name,")"))
+  )
+}
+```
+Get min, max and median rows by column
+```{r}
+ks_pick_min_median_max <- function(data_set, col_name, startValue)
+{
+  # data_set <- data.frame(data_set)
+  # data_subset <- data_set[,col_name]
+  # data_subset <- data_subset[data_subset >= startValue]
+  #data_subset <- data_set %>% filter_(paste(col_name, ">=", startValue))
+  #ks_val_min <- min(data_subset, na.rm = TRUE)
+  data_subset<- ds[ds[[col_name]] >= startValue,]
+
+ 
+   ks_val_min <- min(data_subset[[col_name]], na.rm = TRUE)
+   
+   ks_val_max <- max(data_subset[[col_name]], na.rm = TRUE)
+   ks_val_median <- median(data_subset[[col_name]], na.rm = TRUE)
+   
+   
+   ks_result <- data_set %>% filter_(paste(col_name, "==", ks_val_min))
+   #ks_result <- rbind(ks_result, data_set %>% filter_(paste(col_name, "==", ks_val_median)))
+   ks_result <- rbind(ks_result, data_set %>% filter_(paste(col_name, "==", ks_val_max)))
+   ks_result <- t(ks_result)
+   colnames(ks_result) <- c("Mix", "Max")
+   return(ks_result)
+}
+```
+
+## Text mining
+Bigrams
+```{r}
+ks_textmining_bigrams_transformation <- function(dataset, inputColumnName, domain_stop_word, nGreaterThan) {
+
+  #appending domain specific custom words to the tidytext::stop_words
+  stop_words_with_domain <- bind_rows(
+                                  data_frame(word =  domain_stop_word,lexicon = c("custom")),
+                                  tidytext::stop_words)    
+   
+  
+  dataset %>%
+    unnest_tokens_("bigram", inputColumnName, token = "ngrams", n = 2) %>%
+    separate(bigram, c("word1", "word2"), sep = " ") %>%
+    filter(!word1 %in% stop_words_with_domain$word,
+           !word2 %in% stop_words_with_domain$word,
+           !stringr::str_detect(word1, regex("\\d")),
+           !stringr::str_detect(word2, regex("\\d"))
+           ) %>%
+    count(word1, word2, sort = TRUE) %>%
+    filter(n > nGreaterThan)
+}
+```
+
+Bigrams visualization
+```{r}
+ks_textmining_bigrams_visualization <- function(bigrams, nGreaterThan) {
+  #bigrams - word1, word2
+  
+  set.seed(2016)
+  #arrow
+  a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+  
+  bigrams %>%
+    filter(n > nGreaterThan) %>%
+    igraph::graph_from_data_frame() %>%
+    ggraph::ggraph(layout = "fr") +
+    ggraph::geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a) +
+    ggraph::geom_node_point(color = "lightblue", size = 5) +
+    ggraph::geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+    theme_void()
+}
+```
+
+# Prepare fields
+
+Prepare date
+```{r}
+ks_prepare_date <- function(data_set, col_name)
+{
+  #prm
+  #data_set : data set
+  #col_name : name of the column we want to process
+  
+  #example
+  #ks_prepare_date(mix_dataset,"some_date")
+ 
+  require(lubridate)
+
+  
+  data_set <- data.frame(data_set)
+  data_subset <- data_set[,col_name]
+  
+  
+  data_set[,paste0(col_name,"_unix")] <- as.numeric(data_subset)
+  data_set[,paste0(col_name,"_year")] <- lubridate::year(data_subset)
+  data_set[,paste0(col_name,"_month")] <- lubridate::month(data_subset)
+  data_set[,paste0(col_name,"_month_abbr")] <- lubridate::month(data_subset, label = TRUE)
+  data_set[,paste0(col_name,"_day")] <- lubridate::day(data_subset)
+  data_set[,paste0(col_name,"_weekday")] <- lubridate::wday(data_subset)
+  data_set[,paste0(col_name,"_weekday_abbr")] <- lubridate::wday(data_subset, label = TRUE)
+  data_set[,paste0(col_name,"_last_day")] <- lubridate::ceiling_date(data_subset, "month") - lubridate::days(1)
+  data_set[,paste0(col_name,"_is_weekend")] <- lubridate::wday(data_subset) == 7 | lubridate::wday(data_subset) == 1
+  return(data_set)
+  
+}
+```
+
+Prepare currency
+```{r}
+ks_prepare_currency <- function(data_set, col_name)
+{
+  #prm
+  #data_set : data set
+  #col_name : name of the column we want to process
+  
+  #example
+  #ks_prepare_amount(mix_dataset,"some_date")
+
+  data_set <- data.frame(data_set)
+  data_subset <- data_set[,col_name]
+  
+  
+  data_set[,col_name] <- as.numeric(stringr::str_replace_all(data_subset, "[$,]", ""))
+ 
+  return(data_set)
+  
+}
+```
+
+

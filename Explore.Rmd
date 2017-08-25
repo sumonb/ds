@@ -1,0 +1,96 @@
+---
+title: "Explore"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Import Libraries
+```{r eval = FALSE}
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(readr)
+library(ggplot2)
+library(forcats)
+
+```
+
+
+
+
+
+## Global variables
+
+This section will list all the global variables needed for this sesstion.
+
+```{r}
+ds_path <- ""
+```
+
+
+## Loading file
+```{r eval = FALSE}
+ds <- readr::read_csv(ds_path)
+```
+
+## Additional class
+Assigning aditional class for better dataset management
+```{r eval = FALSE}
+ds<- tbl_df(ds)
+```
+##Basic info
+```{r eval = FALSE}
+dim(ds)
+class(ds)
+sapply(ds,class)
+names(ds)
+str(ds)
+summary(ds)
+```
+
+##Sample
+```{r eval = FALSE}
+head(ds)
+tail(ds)
+
+#Random sample
+dplyr::sample_n(ds, 5)
+```
+
+
+## Meta data cleansing
+Sometimes it is convenient to map all variable names to lowercase, and remove additional character
+```{r eval = FALSE}
+names(ds) <- stringr::str_to_lower(names(ds)) 
+names(ds) <- stringr::str_replace_all(stringr::str_to_lower(names(mainDs)) , "[ /.]", "_") 
+```
+
+
+## Identify empty columns
+```{r eval = FALSE}
+# 100% missing values
+ds_info_values_missing <- sapply(ds, function(x) sum(is.na(x)))
+ds_info_columns_empty <- names(which(ds_info_values_missing == nrow(ds)))
+ds[,ds_info_columns_empty] <- NULL
+
+# Example 70% missing values
+s_info_columns_empty_percent <- names(which(ds_info_values_missing >= 0.70*nrow(ds)))
+ds[,ds_info_columns_empty_percent] <- NULL
+ds_info_columns_to_keep <- setdiff()
+``` 
+##Conversion
+Converting string to numeric, and also remove $ and ,. Below **ks_prepare_amount** function is documented in the common function document.
+```{r eval = FALSE}
+#sale_price is example field
+ds <- ks_prepare_amount(ds, "sale_price")
+```
+
+Converting string to date
+```{r eval = FALSE}
+#sale_date is example field
+ds$sale_date <- lubridate::dmy(ds$sale_date)
+```
