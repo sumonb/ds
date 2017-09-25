@@ -1,0 +1,20 @@
+---
+title: "Charts"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Bar graph typically used to display:
+
+* Numeric values (on the y-axis)
+* Categories (on the x-axis)
+
+
+```{r cars}
+summary(cars)
+```
+
+

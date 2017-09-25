@@ -1,0 +1,14 @@
+---
+title: "Tips/Tricks"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Create an empty vector and initialize with 0.  
+The atomic modes are logical, integer, numeric (synonym double), complex, character and raw.
+```{r}
+vector(mode="numeric", length=20)
+```
