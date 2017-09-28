@@ -1,0 +1,98 @@
+---
+title: "BarChart"
+author: "Sumon Barua"
+output:
+  html_document:
+    fig_width: 4
+    fig_height: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Examples were taken from the book: 
+
+* Graphics Cookbook: Practical Recipes for Visualizing Data
+* Cookbook for R
+
+
+Bar graph typically used to display:
+
+* Numeric values (on the y-axis)
+* Categories (on the x-axis)
+
+####Heights of bars 
+
+* The count of cases for each group - stat_count - stat="count"
+* The value of a column - stat_identity - stat="identity"
+
+```{r}
+#install.packages("gcookbook")
+library(gcookbook)
+library(ggplot2)
+pg_mean
+
+ggplot(pg_mean, aes(x=group, y=weight)) + 
+  geom_bar(stat="identity")
+
+```
+
+When x is a continuous (or numeric) variable vs discrete (categorical variable with factor())
+```{r}
+BOD
+
+#continuous
+ggplot(BOD, aes(x=Time, y=demand)) + 
+  geom_bar(stat="identity")
+
+#discrete
+ggplot(BOD, aes(x=factor(Time), y=demand)) + 
+  geom_bar(stat="identity")
+
+```
+
+####Colouring - 
+
+* fill - to fill the bars
+* colour - bar outline color
+```{r}
+pg_mean
+
+ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black")
+
+```
+
+####Grouping bars together
+
+* Map a variable to fill
+* Use geom_bar(position="dodge")
+
+```{r}
+cabbage_exp
+
+
+ggplot(cabbage_exp, aes(x=Date, y=Weight, fill = Cultivar )) +
+  geom_bar(stat = "identity", position = "dodge")
+
+```
+
+####Custom colours
+To set the colors, cale_fill_brewer() or scale_fill_manual() can be used
+```{r}
+cabbage_exp
+
+ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) +
+   geom_bar(stat = "identity", position="dodge", colour="black") +
+   scale_fill_brewer(palette="Pastel1")
+```
+
+
+####Bar graph with count
+```{r}
+diamonds
+
+ggplot(diamonds, aes(x=cut)) +
+   geom_bar(stat = "count")
+```
