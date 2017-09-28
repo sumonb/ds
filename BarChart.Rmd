@@ -79,7 +79,7 @@ ggplot(cabbage_exp, aes(x=Date, y=Weight, fill = Cultivar )) +
 
 ```
 
-####Custom colours
+####Custom colour palette
 To set the colors, cale_fill_brewer() or scale_fill_manual() can be used
 ```{r}
 cabbage_exp
@@ -96,4 +96,22 @@ diamonds
 
 ggplot(diamonds, aes(x=cut)) +
    geom_bar(stat = "count")
+```
+
+####Custom colour
+Custom colours can be used with help of scale_fill_manual
+```{r}
+upc <- subset(uspopchange, rank(Change)>40)
+upc
+
+ggplot(upc, aes(x= Abb , y = Change, fill = Region)) +
+ geom_bar(stat="identity") +
+ scale_fill_manual(values=c("#ef98aa", "#c2e3ec")) +
+ xlab("State")
+
+#Sort data
+ggplot(upc, aes(x= reorder(Abb,Change) , y = Change, fill = Region)) +
+ geom_bar(stat="identity") +
+ scale_fill_manual(values=c("#ef98aa", "#c2e3ec")) +
+ xlab("State")
 ```

@@ -123,7 +123,7 @@ ggplot(cabbage_exp, aes(x=Date, y=Weight, fill = Cultivar )) +
 
 ![](BarChart_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
-####Custom colours
+####Custom colour palette
 To set the colors, cale_fill_brewer() or scale_fill_manual() can be used
 
 ```r
@@ -178,3 +178,44 @@ ggplot(diamonds, aes(x=cut)) +
 ```
 
 ![](BarChart_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+####Custom colour
+Custom colours can be used with help of scale_fill_manual
+
+```r
+upc <- subset(uspopchange, rank(Change)>40)
+upc
+```
+
+```
+##             State Abb Region Change
+## 3         Arizona  AZ   West   24.6
+## 6        Colorado  CO   West   16.9
+## 10        Florida  FL  South   17.6
+## 11        Georgia  GA  South   18.3
+## 13          Idaho  ID   West   21.1
+## 29         Nevada  NV   West   35.1
+## 34 North Carolina  NC  South   18.5
+## 41 South Carolina  SC  South   15.3
+## 44          Texas  TX  South   20.6
+## 45           Utah  UT   West   23.8
+```
+
+```r
+ggplot(upc, aes(x= Abb , y = Change, fill = Region)) +
+ geom_bar(stat="identity") +
+ scale_fill_manual(values=c("#ef98aa", "#c2e3ec")) +
+ xlab("State")
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+#Sort data
+ggplot(upc, aes(x= reorder(Abb,Change) , y = Change, fill = Region)) +
+ geom_bar(stat="identity") +
+ scale_fill_manual(values=c("#ef98aa", "#c2e3ec")) +
+ xlab("State")
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-7-2.png)<!-- -->
