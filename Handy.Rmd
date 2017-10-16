@@ -11,4 +11,8 @@ Create an empty vector and initialize with 0.
 The atomic modes are logical, integer, numeric (synonym double), complex, character and raw.
 ```{r}
 vector(mode="numeric", length=20)
+
+#or
+rep(0, 20)
+
 ```

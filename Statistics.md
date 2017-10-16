@@ -3,8 +3,31 @@ Sumon Barua
 
 
 
-####Sampling Distribution
+```r
+library(ggplot2)
+```
+####Normal Density
 
+
+```r
+x.values <- seq(40, 160, 1)
+x.sd.values <- seq(40, 160, 15)
+x.zeros.values <- rep(0, 9)
+
+ggplot(data = NULL, aes(x = x.values, y = dnorm(x.values, 100, 15))) +
+  geom_line() +
+  labs(x = "x", y = "f(x)") + 
+  scale_x_continuous(breaks = x.sd.values, labels = x.sd.values) +
+  geom_segment((
+      aes( x = x.sd.values, y = x.zeros.values, xend = x.sd.values, yend = dnorm(x.sd.values, m = 100, s = 15))
+              ), linetype = "dashed") +
+  scale_y_continuous( expand = c( 0,0))
+```
+
+![](Statistics_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+
+####Sampling Distribution
 
 
 ```r
@@ -36,7 +59,7 @@ ggplot( NULL, aes( x = smpl.means)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](Statistics_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+![](Statistics_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 ```r
 #unique values - for x-axis labeling
@@ -54,4 +77,4 @@ ggplot( NULL, aes( x = smpl.means)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](Statistics_files/figure-html/unnamed-chunk-1-2.png)<!-- -->
+![](Statistics_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
