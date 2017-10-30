@@ -16,6 +16,12 @@ library(ggplot2)
 ```
 ####Normal Density
 
+* Data can be spread out/distributed in different ways. When data tends to be around a central value with no bias left or right, and it gets close to a "Normal Distribution" 
+* mean = median = mode
+* 50% of values less than the mean and 50% greater than the mean
+* Density plot provides a visual judgment about whether the distribution is bell shaped
+
+
 ```{r}
 x.values <- seq(40, 160, 1)
 x.sd.values <- seq(40, 160, 15)
@@ -29,7 +35,37 @@ ggplot(data = NULL, aes(x = x.values, y = dnorm(x.values, 100, 15))) +
       aes( x = x.sd.values, y = x.zeros.values, xend = x.sd.values, yend = dnorm(x.sd.values, m = 100, s = 15))
               ), linetype = "dashed") +
   scale_y_continuous( expand = c( 0,0))
+
+#500 random numbers
+x.500random <- rnorm(500)
+ggplot(data = NULL, aes(x = x.500random)) +
+  geom_histogram(aes(y = ..density..), colour="black", fill="white") +
+  geom_density(alpha=.2, fill="#FF6666") 
+
+
 ```
+
+####Normality Test
+
+* Normality test by visual inspection and by significance tests
+* Based on The central limit theorem - the sampling distribution tends to be normal if the sample is large enough (n > 30)
+
+shapiro.test
+
+* p low null go (reject)
+* p high null fly (do not reject)
+* The null hypothesis of these tests is that "sample distribution is normal". 
+
+```{r}
+shapiro.test(x.500random)
+```
+
+```{r}
+qqnorm(x.500random)
+qqline(x.500random)
+```
+
+
 
 
 ####Sampling Distribution
@@ -70,3 +106,7 @@ ggplot( NULL, aes( x = smpl.means)) +
 
 
 ```
+
+
+
+

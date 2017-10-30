@@ -8,6 +8,12 @@ library(ggplot2)
 ```
 ####Normal Density
 
+* Data can be spread out/distributed in different ways. When data tends to be around a central value with no bias left or right, and it gets close to a "Normal Distribution" 
+* mean = median = mode
+* 50% of values less than the mean and 50% greater than the mean
+* Density plot provides a visual judgment about whether the distribution is bell shaped
+
+
 
 ```r
 x.values <- seq(40, 160, 1)
@@ -25,6 +31,54 @@ ggplot(data = NULL, aes(x = x.values, y = dnorm(x.values, 100, 15))) +
 ```
 
 ![](Statistics_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
+#500 random numbers
+x.500random <- rnorm(500)
+ggplot(data = NULL, aes(x = x.500random)) +
+  geom_histogram(aes(y = ..density..), colour="black", fill="white") +
+  geom_density(alpha=.2, fill="#FF6666") 
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](Statistics_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
+
+####Normality Test
+
+* Normality test by visual inspection and by significance tests
+* Based on The central limit theorem - the sampling distribution tends to be normal if the sample is large enough (n > 30)
+
+shapiro.test
+
+* p low null go(out)
+* p high null fly(in)
+* The null hypothesis of these tests is that "sample distribution is normal". 
+
+
+```r
+shapiro.test(x.500random)
+```
+
+```
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  x.500random
+## W = 0.99515, p-value = 0.1197
+```
+
+
+```r
+qqnorm(x.500random)
+qqline(x.500random)
+```
+
+![](Statistics_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+
 
 
 ####Sampling Distribution
@@ -59,7 +113,7 @@ ggplot( NULL, aes( x = smpl.means)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](Statistics_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](Statistics_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
 #unique values - for x-axis labeling
@@ -77,4 +131,8 @@ ggplot( NULL, aes( x = smpl.means)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](Statistics_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+![](Statistics_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+
+
+

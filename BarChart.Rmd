@@ -4,7 +4,7 @@ author: "Sumon Barua"
 output:
   html_document:
     keep_md: true
-    fig_width: 4
+    fig_width: 5
     fig_height: 3
 ---
 
@@ -31,7 +31,7 @@ Bar graph typically used to display:
 ```{r}
 #install.packages("gcookbook")
 library(gcookbook)
-library(ggplot2)
+library(tidyverse)
 pg_mean
 
 ggplot(pg_mean, aes(x=group, y=weight)) + 
@@ -114,4 +114,26 @@ ggplot(upc, aes(x= reorder(Abb,Change) , y = Change, fill = Region)) +
  geom_bar(stat="identity") +
  scale_fill_manual(values=c("#ef98aa", "#c2e3ec")) +
  xlab("State")
+```
+
+
+####Bar graph with count
+```{r}
+diamonds
+
+ggplot(diamonds, aes(x=cut)) +
+   geom_bar(stat = "count")
+```
+
+####Positive and Negative Bars - Opsite direction
+
+* stat = "identity"
+* position = "identity"
+
+```{r}
+climate %>%
+  filter(Source == "Berkeley" & Year >= 1900) %>%
+  mutate(Status = Anomaly10y >= 0) %>%
+  ggplot(aes(x = Year, y = Anomaly10y, fill = Status )) +
+  geom_bar(stat = "identity", position = "identity")
 ```
