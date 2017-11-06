@@ -344,7 +344,7 @@ diamonds_cut_sum
 ```r
 ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=n), vjust="inward") 
+  geom_text(aes(label=n), vjust=-0.2) 
 ```
 
 ![](BarChart_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
@@ -356,3 +356,7 @@ ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
 ```
 
 ![](BarChart_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
+
+```r
+##outward vs inward
+```
