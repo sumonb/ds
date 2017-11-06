@@ -287,3 +287,72 @@ climate %>%
 ```
 
 ![](BarChart_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+####Proportional stacked bar graph
+
+```r
+prop_wt_tbl <- cabbage_exp %>%
+  group_by(Date,Cultivar) %>%
+  summarise(sw = sum(Weight)) %>%
+  mutate(prop = sw/sum(sw)*100)
+
+prop_wt_tbl
+```
+
+```
+## # A tibble: 6 x 4
+## # Groups:   Date [3]
+##     Date Cultivar    sw     prop
+##   <fctr>   <fctr> <dbl>    <dbl>
+## 1    d16      c39  3.18 58.45588
+## 2    d16      c52  2.26 41.54412
+## 3    d20      c39  2.80 47.37733
+## 4    d20      c52  3.11 52.62267
+## 5    d21      c39  2.74 65.08314
+## 6    d21      c52  1.47 34.91686
+```
+
+```r
+ggplot(prop_wt_tbl, aes(x=Date, y=prop, fill=Cultivar)) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_brewer(palette="Pastel1")
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+
+####Labels to bar
+
+```r
+diamonds_cut_sum <- diamonds %>%
+                  count(cut)
+
+diamonds_cut_sum
+```
+
+```
+## # A tibble: 5 x 2
+##         cut     n
+##       <ord> <int>
+## 1      Fair  1610
+## 2      Good  4906
+## 3 Very Good 12082
+## 4   Premium 13791
+## 5     Ideal 21551
+```
+
+```r
+ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=n), vjust="inward") 
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=n), vjust=1.5, colour="white") 
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-11-2.png)<!-- -->

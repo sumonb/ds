@@ -40,7 +40,8 @@ ggplot(data = NULL, aes(x = x.values, y = dnorm(x.values, 100, 15))) +
 x.500random <- rnorm(500)
 ggplot(data = NULL, aes(x = x.500random)) +
   geom_histogram(aes(y = ..density..), colour="black", fill="white") +
-  geom_density(alpha=.2, fill="#FF6666") 
+  geom_density(alpha=.2, fill="#FF6666") +
+  geom_vline(aes(xintercept=mean(x.500random, na.rm = T)), color="red", linetype="dashed", size=1)
 
 
 ```

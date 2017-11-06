@@ -137,3 +137,38 @@ climate %>%
   ggplot(aes(x = Year, y = Anomaly10y, fill = Status )) +
   geom_bar(stat = "identity", position = "identity")
 ```
+
+####Proportional stacked bar graph
+```{r}
+
+prop_wt_tbl <- cabbage_exp %>%
+  group_by(Date,Cultivar) %>%
+  summarise(sw = sum(Weight)) %>%
+  mutate(prop = sw/sum(sw)*100)
+
+prop_wt_tbl
+
+ggplot(prop_wt_tbl, aes(x=Date, y=prop, fill=Cultivar)) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_brewer(palette="Pastel1")
+
+```
+
+
+####Labels to bar
+```{r}
+diamonds_cut_sum <- diamonds %>%
+                  count(cut)
+
+diamonds_cut_sum
+
+ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=n), vjust=-0.2) 
+
+ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=n), vjust=1.5, colour="white") 
+
+##outward vs inward
+```

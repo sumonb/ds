@@ -37,7 +37,8 @@ ggplot(data = NULL, aes(x = x.values, y = dnorm(x.values, 100, 15))) +
 x.500random <- rnorm(500)
 ggplot(data = NULL, aes(x = x.500random)) +
   geom_histogram(aes(y = ..density..), colour="black", fill="white") +
-  geom_density(alpha=.2, fill="#FF6666") 
+  geom_density(alpha=.2, fill="#FF6666") +
+  geom_vline(aes(xintercept=mean(x.500random, na.rm = T)), color="red", linetype="dashed", size=1)
 ```
 
 ```
@@ -53,8 +54,8 @@ ggplot(data = NULL, aes(x = x.500random)) +
 
 shapiro.test
 
-* p low null go(out)
-* p high null fly(in)
+* p low null go (reject)
+* p high null fly (do not reject)
 * The null hypothesis of these tests is that "sample distribution is normal". 
 
 
@@ -67,7 +68,7 @@ shapiro.test(x.500random)
 ## 	Shapiro-Wilk normality test
 ## 
 ## data:  x.500random
-## W = 0.99515, p-value = 0.1197
+## W = 0.99759, p-value = 0.692
 ```
 
 
