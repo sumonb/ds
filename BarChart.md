@@ -360,3 +360,137 @@ ggplot(diamonds_cut_sum, aes(x=cut, y=n)) +
 ```r
 ##outward vs inward
 ```
+
+
+####Cleveland Dot plot.
+
+* By default, character vector will be ordered alphabetically. 
+* By default, Factor would use the order defined in the factor levels.
+* Re-ordering name based on values. ie. reorder(name, avg). This turns name is ordered factor.
+* reorder() function will only order factor levels by one other variable
+
+
+
+```r
+top_records <- tophitters2001[1:25,]
+top_records[, c("name", "lg", "avg")]
+```
+
+```
+##                 name lg    avg
+## 1       Larry Walker NL 0.3501
+## 2      Ichiro Suzuki AL 0.3497
+## 3       Jason Giambi AL 0.3423
+## 4     Roberto Alomar AL 0.3357
+## 5        Todd Helton NL 0.3356
+## 6        Moises Alou NL 0.3314
+## 7      Lance Berkman NL 0.3310
+## 8         Bret Boone AL 0.3307
+## 9  Frank Catalanotto AL 0.3305
+## 10     Chipper Jones NL 0.3304
+## 11     Albert Pujols NL 0.3288
+## 12       Barry Bonds NL 0.3277
+## 13        Sammy Sosa NL 0.3276
+## 14       Juan Pierre NL 0.3274
+## 15     Juan Gonzalez AL 0.3252
+## 16     Luis Gonzalez NL 0.3251
+## 17      Rich Aurilia NL 0.3239
+## 18      Paul Lo Duca NL 0.3196
+## 19        Jose Vidro NL 0.3189
+## 20    Alex Rodriguez AL 0.3180
+## 21       Cliff Floyd NL 0.3171
+## 22   Shannon Stewart AL 0.3156
+## 23      Jeff Cirillo NL 0.3125
+## 24       Jeff Conine AL 0.3111
+## 25       Derek Jeter AL 0.3111
+```
+
+```r
+ggplot(top_records, aes(x=avg, y=name)) +
+  geom_point(size=3)
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+```r
+ggplot(top_records, aes(x=avg, y=reorder(name, avg))) +
+  geom_point(size=3) + # Use a larger dot
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(colour="grey60", linetype="dashed"))
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-12-2.png)<!-- -->
+
+```r
+#swap axis
+ggplot(top_records, aes(x=reorder(name, avg), y=avg)) +
+  geom_point(size=3) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=60, hjust=1),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(colour="grey60", linetype="dashed"))
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-12-3.png)<!-- -->
+
+```r
+top_records$name[order(top_records$lg)]
+```
+
+```
+##  [1] "Ichiro Suzuki"     "Jason Giambi"      "Roberto Alomar"   
+##  [4] "Bret Boone"        "Frank Catalanotto" "Juan Gonzalez"    
+##  [7] "Alex Rodriguez"    "Shannon Stewart"   "Jeff Conine"      
+## [10] "Derek Jeter"       "Larry Walker"      "Todd Helton"      
+## [13] "Moises Alou"       "Lance Berkman"     "Chipper Jones"    
+## [16] "Albert Pujols"     "Barry Bonds"       "Sammy Sosa"       
+## [19] "Juan Pierre"       "Luis Gonzalez"     "Rich Aurilia"     
+## [22] "Paul Lo Duca"      "Jose Vidro"        "Cliff Floyd"      
+## [25] "Jeff Cirillo"
+```
+
+```r
+top_records$name[order(top_records$lg, top_records$avg)]
+```
+
+```
+##  [1] "Jeff Conine"       "Derek Jeter"       "Shannon Stewart"  
+##  [4] "Alex Rodriguez"    "Juan Gonzalez"     "Frank Catalanotto"
+##  [7] "Bret Boone"        "Roberto Alomar"    "Jason Giambi"     
+## [10] "Ichiro Suzuki"     "Jeff Cirillo"      "Cliff Floyd"      
+## [13] "Jose Vidro"        "Paul Lo Duca"      "Rich Aurilia"     
+## [16] "Luis Gonzalez"     "Juan Pierre"       "Sammy Sosa"       
+## [19] "Barry Bonds"       "Albert Pujols"     "Chipper Jones"    
+## [22] "Lance Berkman"     "Moises Alou"       "Todd Helton"      
+## [25] "Larry Walker"
+```
+
+```r
+#color dot based on group
+ggplot(top_records, aes(x=avg, y=reorder(name, avg))) +
+  geom_segment(aes(yend=name), xend=0, colour="grey50") + #line tail
+  geom_point(size=3, aes(colour=lg)) +
+  scale_colour_brewer(palette="Set1", limits=c("NL","AL")) +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(), # No horizontal grid lines
+        legend.position=c(1, 0.55), # Put legend inside plot area
+        legend.justification=c(1, 0.5))
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-12-4.png)<!-- -->
+
+```r
+#facet_grid + and within group name sorted by avg
+ggplot(top_records, aes(x=avg, y=reorder(name, avg))) +
+  geom_segment(aes(yend=name), xend=0, colour="grey50") +
+  geom_point(size=3, aes(colour=lg)) +
+  scale_colour_brewer(palette="Set1", limits=c("NL","AL"), guide=FALSE) +
+    theme_bw() +
+    theme(panel.grid.major.y = element_blank()) +
+    facet_grid(lg ~ ., scales="free_y", space="free_y")
+```
+
+![](BarChart_files/figure-html/unnamed-chunk-12-5.png)<!-- -->
