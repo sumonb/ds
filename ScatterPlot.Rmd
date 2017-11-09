@@ -69,6 +69,7 @@ head(heightweight[, c("sex", "ageYear", "heightIn")])
 ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=sex)) +
   geom_point()
 
+
 ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex)) +
   geom_point()
 
@@ -76,17 +77,29 @@ ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex, colour=sex)) +
   geom_point() +
   scale_shape_manual(values=c(1,2)) +
   scale_colour_brewer(palette="Set1")
+
+
 ```
 
 
 ####Grouping data point by a continuous variable - (numerical) (color/shape) 
 
+* More than 2 Continuous variables
+    + First  -> x
+    + Second -> y
+    + Third  -> color/size
+  
 ```{r}
 
 head(heightweight[, c("sex", "ageYear", "heightIn", "weightLb")])
 
 ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=sex)) +
   geom_point()
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn, size=weightLb, colour=sex)) +
+ geom_point(alpha=.5) +
+ scale_size_area() + # Make area proportional to numeric value
+ scale_colour_brewer(palette="Set1")
 
 ```
 

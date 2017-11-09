@@ -20,7 +20,7 @@ Examples were taken from the book:
 
 ```{r}
 #install.packages("tidyverse")
-#library(tidyverse)
+library(tidyverse)
 
 ```
 
@@ -40,11 +40,16 @@ Examples were taken from the book:
 * Correlation is not causation - Correlation does not mean that one thing causes other.
 
 ```{r}
-mtcars
+diamonds
+
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point()
 
 ```
 
 ####Scatter Plot
 
 * Good relationship
+
+
 
