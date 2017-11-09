@@ -1,0 +1,92 @@
+---
+title: "Scallter Plot"
+author: "Sumon Barua"
+output:
+  html_document:
+  keep_md: true
+fig_width: 5
+fig_height: 3
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Examples were taken from the book: 
+  
+  * Graphics Cookbook: Practical Recipes for Visualizing Data
+  * Cookbook for R
+
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+library(gcookbook)
+```
+
+####Scatter Plot
+
+* Relationship between two continuous variables
+* Each observation is represented by a point
+
+```{r}
+head(heightweight[,c("ageYear", "heightIn")])
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn)) +
+  geom_point()
+
+```
+
+####Different shape+size for point
+
+* Default is solid circles -> 16
+* Default size is 2
+* i.e. shape=21
+* i.e. size=1.5
+* Shape 19 is also a solid circle looks smoother
+
+```{r}
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn)) +
+  geom_point(shape=19, size=1.5)
+
+```
+
+####Grouping data point by a variable - (factor) (color/shape)
+
+* colour=variable_name -> part of aes
+* shape=variable_name -> part of aes
+* Group variable must be categorical/factor/character vector
+* Numeric group variable : Numeric vector needs to converted to factor 
+* http://ggplot2.tidyverse.org/reference/scale_brewer.html
+* http://colorbrewer2.org/
+
+
+
+```{r}
+head(heightweight[, c("sex", "ageYear", "heightIn")])
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=sex)) +
+  geom_point()
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex)) +
+  geom_point()
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex, colour=sex)) +
+  geom_point() +
+  scale_shape_manual(values=c(1,2)) +
+  scale_colour_brewer(palette="Set1")
+```
+
+
+####Grouping data point by a continuous variable - (numerical) (color/shape) 
+
+```{r}
+
+head(heightweight[, c("sex", "ageYear", "heightIn", "weightLb")])
+
+ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=sex)) +
+  geom_point()
+
+```
+

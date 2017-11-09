@@ -43,3 +43,8 @@ Examples were taken from the book:
 mtcars
 
 ```
+
+####Scatter Plot
+
+* Good relationship
+
