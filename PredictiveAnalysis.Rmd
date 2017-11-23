@@ -27,6 +27,7 @@ library(gridExtra)
 
 ####Correlation Analysis
 
+* Level of linear dependence two variables
 * Range of correlation coefficient -> -1 to +1
 * Perfect positive relationship    -> +1
 * Perfect Negative relationship    -> -1
@@ -74,11 +75,15 @@ head(cars)
 str(cars)
 
 
-ggplot(cars, aes(x=speed, y=dist)) +
+p1 <- ggplot(cars, aes(x=speed, y=dist)) +
   geom_point()
 
-#or
-scatter.smooth(x=cars$speed, y=cars$dist)
+p2 <- ggplot(cars, aes(x=speed, y=dist)) +
+  geom_point() +
+  geom_smooth()
+
+grid.arrange(p1, p2, ncol=2)
+
 
 #normality check
 par(mfrow=c(1,2))
@@ -103,8 +108,16 @@ p2 <- ggplot(data = NULL, aes(x = cars$dist)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
         geom_vline(aes(xintercept=mean(cars$dist, na.rm = T)), color="red", linetype="dashed", size=1)
-  
+
 grid.arrange(p1, p2, ncol=2)
+
+#correlation
+cor(cars$speed, cars$dist)
+
+#Simple linear model
+#response~independent
+model_simplelm <- lm(dist~speed, data = cars)
+summary(model_simplelm)
 
 ```
 

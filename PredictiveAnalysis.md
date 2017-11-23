@@ -56,6 +56,7 @@ library(gridExtra)
 
 ####Correlation Analysis
 
+* Level of linear dependence two variables
 * Range of correlation coefficient -> -1 to +1
 * Perfect positive relationship    -> +1
 * Perfect Negative relationship    -> -1
@@ -145,18 +146,21 @@ str(cars)
 ```
 
 ```r
-ggplot(cars, aes(x=speed, y=dist)) +
+p1 <- ggplot(cars, aes(x=speed, y=dist)) +
   geom_point()
+
+p2 <- ggplot(cars, aes(x=speed, y=dist)) +
+  geom_point() +
+  geom_smooth()
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+```
+## `geom_smooth()` using method = 'loess'
 ```
 
 ![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
-
-```r
-#or
-scatter.smooth(x=cars$speed, y=cars$dist)
-```
-
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
 
 ```r
 #normality check
@@ -167,7 +171,7 @@ qqnorm(cars$dist)
 qqline(cars$dist)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
+![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
 
 ```r
 #outliers
@@ -176,7 +180,7 @@ boxplot(cars$speed, main="speed")
 boxplot(cars$dist, main="dist")
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
+![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
 
 ```r
 #check normal distribution
@@ -189,15 +193,55 @@ p2 <- ggplot(data = NULL, aes(x = cars$dist)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
         geom_vline(aes(xintercept=mean(cars$dist, na.rm = T)), color="red", linetype="dashed", size=1)
-  
+
 grid.arrange(p1, p2, ncol=2)
 ```
 
 ```
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+```
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
+![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
+
+```r
+#correlation
+cor(cars$speed, cars$dist)
+```
+
+```
+## [1] 0.8068949
+```
+
+```r
+#Simple linear model
+#response~independent
+model_simplelm <- lm(dist~speed, data = cars)
+summary(model_simplelm)
+```
+
+```
+## 
+## Call:
+## lm(formula = dist ~ speed, data = cars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -29.069  -9.525  -2.272   9.215  43.201 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -17.5791     6.7584  -2.601   0.0123 *  
+## speed         3.9324     0.4155   9.464 1.49e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 15.38 on 48 degrees of freedom
+## Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438 
+## F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12
+```
 
 
