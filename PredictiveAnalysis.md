@@ -298,3 +298,38 @@ abline(cars_training_lm)
 ```
 
 ![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
+cars_training_lm$coefficients
+```
+
+```
+## (Intercept)       speed 
+##  -14.122031    3.740194
+```
+
+```r
+cars_training_lm$coefficients[1] #intercept
+```
+
+```
+## (Intercept) 
+##   -14.12203
+```
+
+```r
+cars_training_lm$coefficients[2] #slope
+```
+
+```
+##    speed 
+## 3.740194
+```
+
+```r
+ggplot(cars_test_ds, aes(x = speed, y = dist)) +
+  geom_point() +
+  geom_abline(intercept = cars_training_lm$coefficients[1], slope = cars_training_lm$coefficients[2])
+```
+
+![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
