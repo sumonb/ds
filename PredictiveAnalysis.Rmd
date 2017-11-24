@@ -65,9 +65,17 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * Coefficient measures the slope of the relationship
 * A type of supervised statistical learning approach that is useful for predicting a quantitative response Y
 * intercept + slope * Independent variable + error term
+* intercept and slope are also called beta coefficient
 * Scatter plot :Indicates the relationship between variables
 * Boxplot plot :To identify outlier
 * Density plot :Distribustion of independent variable
+* Hypothesis : p-Value is associated with Null and alternate hypothesis
+* Null hypothesis: this is the initial hypothesis assuming there is no relationship (associated coefficient is equal to zero)
+* It is very important for the model to be statistically significant before we decide to use it
+* p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
+* More stars are next to p-Value means more statistically signigicant
+* Higher the t-value, the better
+
 
 
 ```{r}
@@ -121,4 +129,33 @@ summary(model_simplelm)
 
 ```
 
+####Predicting Simple linear model
 
+* Split data into training and test set
+* Training data : 80% of the data
+* Test data : Remaining 20% of the data
+* Build model based on traing data
+* Now predict test data using above model
+
+```{r}
+set.seed(123)
+#split training and sample data
+cars_training_index <- sample(1:nrow(cars), 0.8*nrow(cars))
+cars_training_ds <- cars[cars_training_index,]
+cars_test_ds <- cars[-cars_training_index,]
+
+#buil model based on training data
+cars_training_lm <- lm(dist~speed, data = cars_training_ds)
+#test data prediction
+cars_test_ds_dist_prediction <- predict(cars_training_lm, cars_test_ds)
+
+#new data frame to display result
+cars_ext <- data.frame(Existing_Distance = cars_test_ds$dist, Prediction_Distance = cars_test_ds_dist_prediction)
+cars_ext
+
+
+plot(cars_test_ds$speed, cars_test_ds$dist)
+abline(cars_training_lm)
+
+
+```
