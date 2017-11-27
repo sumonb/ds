@@ -75,7 +75,9 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
 * More stars are next to p-Value means more statistically signigicant
 * Higher the t-value, the better
-
+* tilde(~) indicates "depends on"
+* Residual = Observed - Predicted
+* The most useful way to plot the residuals, though, is with your predicted values on the x-axis, and your residuals on the y-axis. The distance from the line at 0 is how bad the prediction was for that value
 
 
 ```{r}
@@ -138,32 +140,37 @@ summary(model_simplelm)
 * Now predict test data using above model
 
 ```{r}
+ds <- cars
+
 set.seed(123)
 #split training and sample data
-cars_training_index <- sample(1:nrow(cars), 0.8*nrow(cars))
-cars_training_ds <- cars[cars_training_index,]
-cars_test_ds <- cars[-cars_training_index,]
+ds.training.index <- sample(1:nrow(cars), 0.8*nrow(cars))
+ds.training <- ds[ds.training.index,]
+ds.test <- ds[-ds.training.index,]
 
 #buil model based on training data
-cars_training_lm <- lm(dist~speed, data = cars_training_ds)
+ds.training.fit <- lm(dist~speed, data = ds.training)
 #test data prediction
-cars_test_ds_dist_prediction <- predict(cars_training_lm, cars_test_ds)
+ds.test$dist_predicted <- predict(ds.training.fit, ds.test)
 
-#new data frame to display result
-cars_ext <- data.frame(Existing_Distance = cars_test_ds$dist, Prediction_Distance = cars_test_ds_dist_prediction)
-cars_ext
+#display result
+ds.test
 
 
-plot(cars_test_ds$speed, cars_test_ds$dist)
-abline(cars_training_lm)
+plot(ds.test$speed, ds.test$dist)
+abline(ds.training.fit)
 
-cars_training_lm$coefficients
-cars_training_lm$coefficients[1] #intercept
-cars_training_lm$coefficients[2] #slope
+ds.training.fit$coefficients
+ds.training.fit$coefficients[1] #intercept
+ds.training.fit$coefficients[2] #slope
 
-ggplot(cars_test_ds, aes(x = speed, y = dist)) +
+ggplot(ds.test, aes(x = speed, y = dist)) +
   geom_point() +
-  geom_abline(intercept = cars_training_lm$coefficients[1], slope = cars_training_lm$coefficients[2])
+  geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2])
 
+#only with ggplot2
+ggplot(cars, aes(x = speed, y = dist)) +
+  geom_point() +
+  geom_smooth(method = lm)
 
 ```

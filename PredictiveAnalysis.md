@@ -125,7 +125,8 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
 * More stars are next to p-Value means more statistically signigicant
 * Higher the t-value, the better
-
+* tilde(~) indicates "depends on"
+* Residual = Observed - Predicted
 
 
 
@@ -262,45 +263,46 @@ summary(model_simplelm)
 
 
 ```r
+ds <- cars
+
 set.seed(123)
 #split training and sample data
-cars_training_index <- sample(1:nrow(cars), 0.8*nrow(cars))
-cars_training_ds <- cars[cars_training_index,]
-cars_test_ds <- cars[-cars_training_index,]
+ds.training.index <- sample(1:nrow(cars), 0.8*nrow(cars))
+ds.training <- ds[ds.training.index,]
+ds.test <- ds[-ds.training.index,]
 
 #buil model based on training data
-cars_training_lm <- lm(dist~speed, data = cars_training_ds)
+ds.training.fit <- lm(dist~speed, data = ds.training)
 #test data prediction
-cars_test_ds_dist_prediction <- predict(cars_training_lm, cars_test_ds)
+ds.test$dist_predicted <- predict(ds.training.fit, ds.test)
 
-#new data frame to display result
-cars_ext <- data.frame(Existing_Distance = cars_test_ds$dist, Prediction_Distance = cars_test_ds_dist_prediction)
-cars_ext
+#display result
+ds.test
 ```
 
 ```
-##    Existing_Distance Prediction_Distance
-## 5                 16            15.79952
-## 6                 10            19.53972
-## 10                17            27.02011
-## 12                14            30.76030
-## 16                26            34.50049
-## 17                34            34.50049
-## 33                56            53.20147
-## 34                76            53.20147
-## 37                46            56.94166
-## 50                85            79.38283
+##    speed dist dist_predicted
+## 5      8   16       15.79952
+## 6      9   10       19.53972
+## 10    11   17       27.02011
+## 12    12   14       30.76030
+## 16    13   26       34.50049
+## 17    13   34       34.50049
+## 33    18   56       53.20147
+## 34    18   76       53.20147
+## 37    19   46       56.94166
+## 50    25   85       79.38283
 ```
 
 ```r
-plot(cars_test_ds$speed, cars_test_ds$dist)
-abline(cars_training_lm)
+plot(ds.test$speed, ds.test$dist)
+abline(ds.training.fit)
 ```
 
 ![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
-cars_training_lm$coefficients
+ds.training.fit$coefficients
 ```
 
 ```
@@ -309,7 +311,7 @@ cars_training_lm$coefficients
 ```
 
 ```r
-cars_training_lm$coefficients[1] #intercept
+ds.training.fit$coefficients[1] #intercept
 ```
 
 ```
@@ -318,7 +320,7 @@ cars_training_lm$coefficients[1] #intercept
 ```
 
 ```r
-cars_training_lm$coefficients[2] #slope
+ds.training.fit$coefficients[2] #slope
 ```
 
 ```
@@ -327,9 +329,18 @@ cars_training_lm$coefficients[2] #slope
 ```
 
 ```r
-ggplot(cars_test_ds, aes(x = speed, y = dist)) +
+ggplot(ds.test, aes(x = speed, y = dist)) +
   geom_point() +
-  geom_abline(intercept = cars_training_lm$coefficients[1], slope = cars_training_lm$coefficients[2])
+  geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2])
 ```
 
 ![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+
+```r
+#only with ggplot2
+ggplot(cars, aes(x = speed, y = dist)) +
+  geom_point() +
+  geom_smooth(method = lm)
+```
+
+![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-3.png)<!-- -->
