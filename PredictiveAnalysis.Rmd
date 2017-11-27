@@ -11,11 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Examples were taken from the book: 
-  
-  * Graphics Cookbook: Practical Recipes for Visualizing Data
-  * Cookbook for R
-
 
 ```{r}
 #install.packages("tidyverse")
@@ -53,16 +48,30 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * Good relationship
 
 
+####Regression
+
+* Regression = Relationship among variables + test hypotheses about those relationships
+* An extension of correlation.
+* Scatter plot : 
+      + Vertical(y) axis represents predicted/dependent/response value
+      + Horizontal(x) axis represents predictor/independent/explanatory value
+      + A line can be used to summarize the relationship
+      + Best fitting/Regression line : There are number of lines could be drawn. The line that go through maximum number of points is the best fitting line. Slope and intercept are called regression coefficients. Coefficient measures the slope of the relationship
+      + Intercept : The line intercepts the y-axis
+      + Slope : Changes in X increase/decrease in Y
+      + It is also important to know how the points vary arround the regression line with the help of residual and standard error.
+* A regression line is a good fit if the residuals variance and standard error of estimate are small.      
+* Response variable must be a continuous variable
+* Predictors can be continuous, discrete or categorical
+
 
 ####Simple linear regression / univariate regression
 
 * This identifies linear relationship between predictor/independent and response/dependent.
 * This predicts response variable based on the independent variable.
-* An extension of correlation.
 * One response variable and a single independent variable
 * Best fitting straight line for a scatter plot between two variables
 * The function lm fits a linear model to data
-* Coefficient measures the slope of the relationship
 * A type of supervised statistical learning approach that is useful for predicting a quantitative response Y
 * intercept + slope * Independent variable + error term
 * intercept and slope are also called beta coefficient
@@ -81,14 +90,22 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 
 
 ```{r}
-head(cars)
-str(cars)
+
+ds.response.variable <- "dist"
+ds.predictor.variable <- "speed"
+ds.source <- cars
+ds <- ds.source[, c(ds.response.variable, ds.predictor.variable)]
+names(ds) <- c("Y", "X")
 
 
-p1 <- ggplot(cars, aes(x=speed, y=dist)) +
+head(ds)
+str(ds)
+
+
+p1 <- ggplot(ds, aes(x=X, y=Y)) +
   geom_point()
 
-p2 <- ggplot(cars, aes(x=speed, y=dist)) +
+p2 <- ggplot(ds, aes(x=X, y=Y)) +
   geom_point() +
   geom_smooth()
 
@@ -97,36 +114,36 @@ grid.arrange(p1, p2, ncol=2)
 
 #normality check
 par(mfrow=c(1,2))
-qqnorm(cars$speed)
-qqline(cars$speed)
-qqnorm(cars$dist)
-qqline(cars$dist)
+qqnorm(ds$X)
+qqline(ds$X)
+qqnorm(ds$Y)
+qqline(ds$Y)
 
 #outliers
 par(mfrow=c(1,2))
-boxplot(cars$speed, main="speed")
-boxplot(cars$dist, main="dist")
+boxplot(ds$X, main=ds.predictor.variable)
+boxplot(ds$Y, main=ds.response.variable)
 
 
 #check normal distribution
-p1 <- ggplot(data = NULL, aes(x = cars$speed)) +
+p1 <- ggplot(data = NULL, aes(x = ds$X)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
-        geom_vline(aes(xintercept=mean(cars$speed, na.rm = T)), color="red", linetype="dashed", size=1)
+        geom_vline(aes(xintercept=mean(ds$X, na.rm = T)), color="red", linetype="dashed", size=1)
 
-p2 <- ggplot(data = NULL, aes(x = cars$dist)) +
+p2 <- ggplot(data = NULL, aes(x = ds$Y)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
-        geom_vline(aes(xintercept=mean(cars$dist, na.rm = T)), color="red", linetype="dashed", size=1)
+        geom_vline(aes(xintercept=mean(ds$Y, na.rm = T)), color="red", linetype="dashed", size=1)
 
 grid.arrange(p1, p2, ncol=2)
 
 #correlation
-cor(cars$speed, cars$dist)
+cor(ds$X, ds$Y)
 
 #Simple linear model
 #response~independent
-model_simplelm <- lm(dist~speed, data = cars)
+model_simplelm <- lm(Y~X, data = ds)
 summary(model_simplelm)
 
 ```
@@ -140,37 +157,40 @@ summary(model_simplelm)
 * Now predict test data using above model
 
 ```{r}
-ds <- cars
 
 set.seed(123)
 #split training and sample data
-ds.training.index <- sample(1:nrow(cars), 0.8*nrow(cars))
+ds.training.index <- sample(1:nrow(ds), 0.8*nrow(ds))
 ds.training <- ds[ds.training.index,]
 ds.test <- ds[-ds.training.index,]
 
 #buil model based on training data
-ds.training.fit <- lm(dist~speed, data = ds.training)
+ds.training.fit <- lm(Y~X, data = ds.training)
 #test data prediction
-ds.test$dist_predicted <- predict(ds.training.fit, ds.test)
+ds.test$Y_predicted <- predict(ds.training.fit, ds.test)
 
+summary(ds.training.fit)
 #display result
-ds.test
+ds.test[, c('X', 'Y', 'Y_predicted')]
 
 
-plot(ds.test$speed, ds.test$dist)
+plot(ds.test$X, ds.test$Y)
 abline(ds.training.fit)
 
 ds.training.fit$coefficients
 ds.training.fit$coefficients[1] #intercept
 ds.training.fit$coefficients[2] #slope
 
-ggplot(ds.test, aes(x = speed, y = dist)) +
+ggplot(ds.test, aes(x = X, y = Y)) +
   geom_point() +
   geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2])
 
 #only with ggplot2
-ggplot(cars, aes(x = speed, y = dist)) +
+ggplot(ds, aes(x = X, y = Y)) +
   geom_point() +
   geom_smooth(method = lm)
 
 ```
+
+
+####Multiple regression / multivariate regression
