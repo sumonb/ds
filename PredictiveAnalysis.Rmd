@@ -94,12 +94,14 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 ds.response.variable <- "dist"
 ds.predictor.variable <- "speed"
 ds.source <- cars
-ds <- ds.source[, c(ds.response.variable, ds.predictor.variable)]
-names(ds) <- c("Y", "X")
+ds.example.need.to.predict <- c(25,26,27,28,29,30)
 
 
-head(ds)
-str(ds)
+ds <- ds.source[, c(ds.predictor.variable, ds.response.variable)]
+names(ds) <- c("X", "Y")
+ds
+
+
 
 
 p1 <- ggplot(ds, aes(x=X, y=Y)) +
@@ -146,6 +148,16 @@ cor(ds$X, ds$Y)
 model_simplelm <- lm(Y~X, data = ds)
 summary(model_simplelm)
 
+ds$Y_WholeDS_Prediction <- fitted(model_simplelm)
+ds$Y_WholeDS_Residuals <- residuals(model_simplelm)
+
+ds
+
+#only with ggplot2
+ggplot(model_simplelm, aes(x = X, y = Y)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
 ```
 
 ####Predicting Simple linear model
@@ -158,7 +170,7 @@ summary(model_simplelm)
 
 ```{r}
 
-set.seed(123)
+#set.seed(123)
 #split training and sample data
 ds.training.index <- sample(1:nrow(ds), 0.8*nrow(ds))
 ds.training <- ds[ds.training.index,]
@@ -166,10 +178,15 @@ ds.test <- ds[-ds.training.index,]
 
 #buil model based on training data
 ds.training.fit <- lm(Y~X, data = ds.training)
+summary(ds.training.fit)
+ds.training.pred <- data.frame (ds.training , Y_Prediction = fitted(ds.training.fit), Y_Residuals =residuals(ds.training.fit))
+
+ds.training.pred
+
 #test data prediction
 ds.test$Y_predicted <- predict(ds.training.fit, ds.test)
 
-summary(ds.training.fit)
+
 #display result
 ds.test[, c('X', 'Y', 'Y_predicted')]
 
@@ -185,10 +202,11 @@ ggplot(ds.test, aes(x = X, y = Y)) +
   geom_point() +
   geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2])
 
-#only with ggplot2
-ggplot(ds, aes(x = X, y = Y)) +
-  geom_point() +
-  geom_smooth(method = lm)
+
+#single value prediction
+
+ds.example.predicted <- predict(ds.training.fit, data.frame(X = ds.example.need.to.predict))
+data.frame(X=ds.example.need.to.predict, ds.example.predicted)
 
 ```
 
