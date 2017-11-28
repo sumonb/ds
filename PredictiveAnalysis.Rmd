@@ -97,6 +97,19 @@ ds.source <- cars
 ds.example.need.to.predict <- c(25,26,27,28,29,30)
 
 
+# ds.response.variable <- 'Sepal.Length'
+# ds.predictor.variable <- 'Petal.Length'
+# ds.source <- iris
+# ds.example.need.to.predict <- c(7.0)
+
+# ds.response.variable <- 'Performance'
+# ds.predictor.variable <- 'Aptitude'
+# ds.source <- data.frame(Aptitude = c( 45, 81, 65, 87, 68, 91, 77, 61, 55, 66, 82, 93, 76, 83, 61, 74),
+#                         Performance = c( 56, 74, 56, 81, 75, 84, 68, 52, 57, 82, 73, 90,67, 79, 70, 66))
+# ds.example.need.to.predict <- c(100)
+
+
+#-------------------
 ds <- ds.source[, c(ds.predictor.variable, ds.response.variable)]
 names(ds) <- c("X", "Y")
 ds
@@ -164,12 +177,12 @@ p1 <- ggplot(model_simplelm, aes(x = X, y = Y)) +
         geom_smooth(method = lm) +
         labs(x=ds.predictor.variable, y= ds.response.variable)
 
-p2 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_Residuals)) + 
-        geom_point() + 
+p2 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_Residuals)) +
+        geom_point() +
         geom_hline( yintercept = 0, linetype = "dashed" ) +
-        labs(x='Predicted ' + ds.response.variable, y='Residuals' + ds.response.variable)
+        labs(x=paste0('Predicted :', ds.response.variable), y=paste0('Residuals :' , ds.response.variable))
 
-grid.arrange(p1, p2, 2)
+grid.arrange(p1, p2, ncol = 2)
 
 ```
 
