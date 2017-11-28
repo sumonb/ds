@@ -105,20 +105,22 @@ ds
 
 
 p1 <- ggplot(ds, aes(x=X, y=Y)) +
-  geom_point()
+  geom_point() +
+  labs(x=ds.predictor.variable, y=ds.response.variable)
 
 p2 <- ggplot(ds, aes(x=X, y=Y)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth() +
+  labs(x=ds.predictor.variable, y=ds.response.variable)
 
 grid.arrange(p1, p2, ncol=2)
 
 
 #normality check
 par(mfrow=c(1,2))
-qqnorm(ds$X)
+qqnorm(ds$X, xlab = ds.predictor.variable)
 qqline(ds$X)
-qqnorm(ds$Y)
+qqnorm(ds$Y, xlab = ds.response.variable)
 qqline(ds$Y)
 
 #outliers
@@ -131,12 +133,15 @@ boxplot(ds$Y, main=ds.response.variable)
 p1 <- ggplot(data = NULL, aes(x = ds$X)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
-        geom_vline(aes(xintercept=mean(ds$X, na.rm = T)), color="red", linetype="dashed", size=1)
+        geom_vline(aes(xintercept=mean(ds$X, na.rm = T)), color="red", linetype="dashed", size=1) +
+        labs(x=ds.predictor.variable)
+  
 
 p2 <- ggplot(data = NULL, aes(x = ds$Y)) +
         geom_histogram(aes(y = ..density..), colour="black", fill="white") +
         geom_density(alpha=.2, fill="#FF6666") +
-        geom_vline(aes(xintercept=mean(ds$Y, na.rm = T)), color="red", linetype="dashed", size=1)
+        geom_vline(aes(xintercept=mean(ds$Y, na.rm = T)), color="red", linetype="dashed", size=1) +
+        labs(x=ds.response.variable)
 
 grid.arrange(p1, p2, ncol=2)
 
@@ -154,9 +159,17 @@ ds$Y_WholeDS_Residuals <- residuals(model_simplelm)
 ds
 
 #only with ggplot2
-ggplot(model_simplelm, aes(x = X, y = Y)) +
-  geom_point() +
-  geom_smooth(method = lm)
+p1 <- ggplot(model_simplelm, aes(x = X, y = Y)) +
+        geom_point() +
+        geom_smooth(method = lm) +
+        labs(x=ds.predictor.variable, y= ds.response.variable)
+
+p2 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_Residuals)) + 
+        geom_point() + 
+        geom_hline( yintercept = 0, linetype = "dashed" ) +
+        labs(x='Predicted ' + ds.response.variable, y='Residuals' + ds.response.variable)
+
+grid.arrange(p1, p2, 2)
 
 ```
 
@@ -191,7 +204,7 @@ ds.test$Y_predicted <- predict(ds.training.fit, ds.test)
 ds.test[, c('X', 'Y', 'Y_predicted')]
 
 
-plot(ds.test$X, ds.test$Y)
+plot(ds.test$X, ds.test$Y, xlab = ds.predictor.variable, ylab = ds.response.variable)
 abline(ds.training.fit)
 
 ds.training.fit$coefficients
@@ -200,7 +213,8 @@ ds.training.fit$coefficients[2] #slope
 
 ggplot(ds.test, aes(x = X, y = Y)) +
   geom_point() +
-  geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2])
+  geom_abline(intercept = ds.training.fit$coefficients[1], slope = ds.training.fit$coefficients[2]) +
+  labs(x=ds.predictor.variable, y=ds.response.variable)
 
 
 #single value prediction
