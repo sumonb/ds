@@ -1,5 +1,5 @@
 ---
-title: "Predictive Analysis"
+title: "Regression - Simple Linear Regression"
 author: "Sumon Barua"
 output:
   html_document:
@@ -49,8 +49,9 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 
 
 ####Regression
-
+* Lets make some predictions
 * Regression = Relationship among variables + test hypotheses about those relationships
+* This predicts response variable based on the independent variable/variables.
 * An extension of correlation.
 * Scatter plot : 
       + Vertical(y) axis represents predicted/dependent/response value
@@ -63,12 +64,20 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * A regression line is a good fit if the residuals variance and standard error of estimate are small.      
 * Response variable must be a continuous variable
 * Predictors can be continuous, discrete or categorical
+* Hypothesis : p-Value is associated with Null and alternate hypothesis
+* Null hypothesis: this is the initial hypothesis assuming there is no relationship (associated coefficient is equal to zero)
+* It is very important for the model to be statistically significant before we decide to use it
+* p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
+* More stars are next to p-Value means more statistically signigicant
+* Higher the t-value, the better
+* tilde(~) indicates "depends on"
+* Residual = Observed - Predicted
 
 
 ####Simple linear regression / univariate regression
 
 * This identifies linear relationship between predictor/independent and response/dependent.
-* This predicts response variable based on the independent variable.
+* Slope and intercept of the regression line will help you to predict a new variable
 * One response variable and a single independent variable
 * Best fitting straight line for a scatter plot between two variables
 * The function lm fits a linear model to data
@@ -78,14 +87,6 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * Scatter plot :Indicates the relationship between variables
 * Boxplot plot :To identify outlier
 * Density plot :Distribustion of independent variable
-* Hypothesis : p-Value is associated with Null and alternate hypothesis
-* Null hypothesis: this is the initial hypothesis assuming there is no relationship (associated coefficient is equal to zero)
-* It is very important for the model to be statistically significant before we decide to use it
-* p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
-* More stars are next to p-Value means more statistically signigicant
-* Higher the t-value, the better
-* tilde(~) indicates "depends on"
-* Residual = Observed - Predicted
 * The most useful way to plot the residuals, though, is with your predicted values on the x-axis, and your residuals on the y-axis. The distance from the line at 0 is how bad the prediction was for that value
 
 
@@ -112,7 +113,8 @@ ds.example.need.to.predict <- c(25,26,27,28,29,30)
 #-------------------
 ds <- ds.source[, c(ds.predictor.variable, ds.response.variable)]
 names(ds) <- c("X", "Y")
-ds
+head(ds)
+summary(ds)
 
 
 
@@ -196,7 +198,7 @@ grid.arrange(p1, p2, ncol = 2)
 
 ```{r}
 
-#set.seed(123)
+set.seed(123)
 #split training and sample data
 ds.training.index <- sample(1:nrow(ds), 0.8*nrow(ds))
 ds.training <- ds[ds.training.index,]
@@ -238,4 +240,4 @@ data.frame(X=ds.example.need.to.predict, ds.example.predicted)
 ```
 
 
-####Multiple regression / multivariate regression
+

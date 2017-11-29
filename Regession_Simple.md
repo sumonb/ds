@@ -1,4 +1,4 @@
-# Predictive Analysis
+# Regression - Simple Linear Regression
 Sumon Barua  
   
 
@@ -91,7 +91,7 @@ ggplot(diamonds, aes(x=carat, y=price)) +
   geom_point()
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 ####Scatter Plot
 
@@ -99,8 +99,9 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 
 
 ####Regression
-
+* Lets make some predictions
 * Regression = Relationship among variables + test hypotheses about those relationships
+* This predicts response variable based on the independent variable/variables.
 * An extension of correlation.
 * Scatter plot : 
       + Vertical(y) axis represents predicted/dependent/response value
@@ -113,12 +114,20 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * A regression line is a good fit if the residuals variance and standard error of estimate are small.      
 * Response variable must be a continuous variable
 * Predictors can be continuous, discrete or categorical
+* Hypothesis : p-Value is associated with Null and alternate hypothesis
+* Null hypothesis: this is the initial hypothesis assuming there is no relationship (associated coefficient is equal to zero)
+* It is very important for the model to be statistically significant before we decide to use it
+* p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
+* More stars are next to p-Value means more statistically signigicant
+* Higher the t-value, the better
+* tilde(~) indicates "depends on"
+* Residual = Observed - Predicted
 
 
 ####Simple linear regression / univariate regression
 
 * This identifies linear relationship between predictor/independent and response/dependent.
-* This predicts response variable based on the independent variable.
+* Slope and intercept of the regression line will help you to predict a new variable
 * One response variable and a single independent variable
 * Best fitting straight line for a scatter plot between two variables
 * The function lm fits a linear model to data
@@ -128,14 +137,6 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * Scatter plot :Indicates the relationship between variables
 * Boxplot plot :To identify outlier
 * Density plot :Distribustion of independent variable
-* Hypothesis : p-Value is associated with Null and alternate hypothesis
-* Null hypothesis: this is the initial hypothesis assuming there is no relationship (associated coefficient is equal to zero)
-* It is very important for the model to be statistically significant before we decide to use it
-* p-Value < pre-determined level(0.05) indicates that the model is statistically significance and we can reject Null hypothesis
-* More stars are next to p-Value means more statistically signigicant
-* Higher the t-value, the better
-* tilde(~) indicates "depends on"
-* Residual = Observed - Predicted
 * The most useful way to plot the residuals, though, is with your predicted values on the x-axis, and your residuals on the y-axis. The distance from the line at 0 is how bad the prediction was for that value
 
 
@@ -162,62 +163,38 @@ ds.example.need.to.predict <- c(25,26,27,28,29,30)
 #-------------------
 ds <- ds.source[, c(ds.predictor.variable, ds.response.variable)]
 names(ds) <- c("X", "Y")
-ds
+head(ds)
 ```
 
 ```
-##     X   Y
-## 1   4   2
-## 2   4  10
-## 3   7   4
-## 4   7  22
-## 5   8  16
-## 6   9  10
-## 7  10  18
-## 8  10  26
-## 9  10  34
-## 10 11  17
-## 11 11  28
-## 12 12  14
-## 13 12  20
-## 14 12  24
-## 15 12  28
-## 16 13  26
-## 17 13  34
-## 18 13  34
-## 19 13  46
-## 20 14  26
-## 21 14  36
-## 22 14  60
-## 23 14  80
-## 24 15  20
-## 25 15  26
-## 26 15  54
-## 27 16  32
-## 28 16  40
-## 29 17  32
-## 30 17  40
-## 31 17  50
-## 32 18  42
-## 33 18  56
-## 34 18  76
-## 35 18  84
-## 36 19  36
-## 37 19  46
-## 38 19  68
-## 39 20  32
-## 40 20  48
-## 41 20  52
-## 42 20  56
-## 43 20  64
-## 44 22  66
-## 45 23  54
-## 46 24  70
-## 47 24  92
-## 48 24  93
-## 49 24 120
-## 50 25  85
+##   X  Y
+## 1 4  2
+## 2 4 10
+## 3 7  4
+## 4 7 22
+## 5 8 16
+## 6 9 10
 ```
+
+```r
+summary(ds)
+```
+
+```
+##        X              Y         
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+```
+
+```r
+plot(cars)
+```
+
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 ```r
 p1 <- ggplot(ds, aes(x=X, y=Y)) +
@@ -236,7 +213,7 @@ grid.arrange(p1, p2, ncol=2)
 ## `geom_smooth()` using method = 'loess'
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
 
 ```r
 #normality check
@@ -247,7 +224,7 @@ qqnorm(ds$Y, xlab = ds.response.variable)
 qqline(ds$Y)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
 
 ```r
 #outliers
@@ -256,7 +233,7 @@ boxplot(ds$X, main=ds.predictor.variable)
 boxplot(ds$Y, main=ds.response.variable)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
 
 ```r
 #check normal distribution
@@ -284,7 +261,7 @@ grid.arrange(p1, p2, ncol=2)
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
 
 ```r
 #correlation
@@ -399,7 +376,7 @@ p2 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-6.png)<!-- -->
 
 ####Predicting Simple linear model
 
@@ -411,7 +388,7 @@ grid.arrange(p1, p2, ncol = 2)
 
 
 ```r
-#set.seed(123)
+set.seed(123)
 #split training and sample data
 ds.training.index <- sample(1:nrow(ds), 0.8*nrow(ds))
 ds.training <- ds[ds.training.index,]
@@ -428,19 +405,19 @@ summary(ds.training.fit)
 ## lm(formula = Y ~ X, data = ds.training)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -31.694  -8.253  -1.728  10.202  40.334 
+##    Min     1Q Median     3Q    Max 
+## -28.68 -10.87  -2.50  10.14  44.36 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -16.1697     7.3409  -2.203   0.0338 *  
-## X             3.9932     0.4479   8.915 7.51e-11 ***
+## (Intercept) -14.1220     8.0888  -1.746   0.0889 .  
+## X             3.7402     0.4912   7.614 3.69e-09 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 15.88 on 38 degrees of freedom
-## Multiple R-squared:  0.6765,	Adjusted R-squared:  0.668 
-## F-statistic: 79.48 on 1 and 38 DF,  p-value: 7.514e-11
+## Residual standard error: 16.38 on 38 degrees of freedom
+## Multiple R-squared:  0.6041,	Adjusted R-squared:  0.5936 
+## F-statistic: 57.97 on 1 and 38 DF,  p-value: 3.688e-09
 ```
 
 ```r
@@ -451,87 +428,87 @@ ds.training.pred
 
 ```
 ##     X   Y Y_WholeDS_Prediction Y_WholeDS_Residuals Y_Prediction
-## 36 19  36            57.136672          -21.136672    59.700382
-## 21 14  36            37.474628           -1.474628    39.734574
-## 17 13  34            33.542219            0.457781    35.741412
-## 33 18  56            53.204263            2.795737    55.707220
-## 37 19  46            57.136672          -11.136672    59.700382
-## 47 24  92            76.798715           15.201285    79.666190
-## 11 11  28            25.677401            2.322599    27.755089
-## 23 14  80            37.474628           42.525372    39.734574
-## 7  10  18            21.744993           -3.744993    23.761927
-## 16 13  26            33.542219           -7.542219    35.741412
-## 35 18  84            53.204263           30.795737    55.707220
-## 49 24 120            76.798715           43.201285    79.666190
-## 22 14  60            37.474628           22.525372    39.734574
-## 50 25  85            80.731124            4.268876    83.659351
-## 31 17  50            49.271854            0.728146    51.714059
-## 4   7  22             9.947766           12.052234    11.782443
-## 43 20  64            61.069080            2.930920    63.693543
-## 48 24  93            76.798715           16.201285    79.666190
-## 18 13  34            33.542219            0.457781    35.741412
-## 14 12  24            29.609810           -5.609810    31.748251
-## 26 15  54            41.407036           12.592964    43.727735
-## 9  10  34            21.744993           12.255007    23.761927
-## 45 23  54            72.866307          -18.866307    75.673028
-## 46 24  70            76.798715           -6.798715    79.666190
-## 29 17  32            49.271854          -17.271854    51.714059
-## 3   7   4             9.947766           -5.947766    11.782443
-## 39 20  32            61.069080          -29.069080    63.693543
-## 25 15  26            41.407036          -15.407036    43.727735
-## 44 22  66            68.933898           -2.933898    71.679866
-## 15 12  28            29.609810           -1.609810    31.748251
-## 8  10  26            21.744993            4.255007    23.761927
-## 2   4  10            -1.849460           11.849460    -0.197042
-## 38 19  68            57.136672           10.863328    59.700382
-## 10 11  17            25.677401           -8.677401    27.755089
-## 42 20  56            61.069080           -5.069080    63.693543
-## 12 12  14            29.609810          -15.609810    31.748251
-## 34 18  76            53.204263           22.795737    55.707220
-## 1   4   2            -1.849460            3.849460    -0.197042
-## 28 16  40            45.339445           -5.339445    47.720897
-## 5   8  16            13.880175            2.119825    15.775604
+## 15 12  28            29.609810           -1.609810    30.760300
+## 39 20  32            61.069080          -29.069080    60.681855
+## 20 14  26            37.474628          -11.474628    38.240689
+## 42 20  56            61.069080           -5.069080    60.681855
+## 44 22  66            68.933898           -2.933898    68.162244
+## 3   7   4             9.947766           -5.947766    12.059329
+## 24 15  20            41.407036          -21.407036    41.980883
+## 49 24 120            76.798715           43.201285    75.642632
+## 46 24  70            76.798715           -6.798715    75.642632
+## 19 13  46            33.542219           12.457781    34.500495
+## 43 20  64            61.069080            2.930920    60.681855
+## 18 13  34            33.542219            0.457781    34.500495
+## 26 15  54            41.407036           12.592964    41.980883
+## 22 14  60            37.474628           22.525372    38.240689
+## 4   7  22             9.947766           12.052234    12.059329
+## 32 18  42            53.204263          -11.204263    53.201466
+## 9  10  34            21.744993           12.255007    23.279912
+## 2   4  10            -1.849460           11.849460     0.838746
+## 11 11  28            25.677401            2.322599    27.020106
+## 30 17  40            49.271854           -9.271854    49.461272
+## 27 16  32            45.339445          -13.339445    45.721078
+## 21 14  36            37.474628           -1.474628    38.240689
+## 40 20  48            61.069080          -13.069080    60.681855
+## 31 17  50            49.271854            0.728146    49.461272
+## 28 16  40            45.339445           -5.339445    45.721078
+## 38 19  68            57.136672           10.863328    56.941661
+## 14 12  24            29.609810           -5.609810    30.760300
+## 47 24  92            76.798715           15.201285    75.642632
+## 7  10  18            21.744993           -3.744993    23.279912
+## 36 19  36            57.136672          -21.136672    56.941661
+## 48 24  93            76.798715           16.201285    75.642632
+## 25 15  26            41.407036          -15.407036    41.980883
+## 13 12  20            29.609810           -9.609810    30.760300
+## 23 14  80            37.474628           42.525372    38.240689
+## 1   4   2            -1.849460            3.849460     0.838746
+## 8  10  26            21.744993            4.255007    23.279912
+## 35 18  84            53.204263           30.795737    53.201466
+## 45 23  54            72.866307          -18.866307    71.902438
+## 29 17  32            49.271854          -17.271854    49.461272
+## 41 20  52            61.069080           -9.069080    60.681855
 ##    Y_Residuals
-## 36 -23.7003817
-## 21  -3.7345738
-## 17  -1.7414122
-## 33   0.2927799
-## 37 -13.7003817
-## 47  12.3338104
-## 11   0.2449109
-## 23  40.2654262
-## 7   -5.7619275
-## 16  -9.7414122
-## 35  28.2927799
-## 49  40.3338104
-## 22  20.2654262
-## 50   1.3406489
-## 31  -1.7140585
-## 4   10.2175573
-## 43   0.3064567
-## 48  13.3338104
-## 18  -1.7414122
-## 14  -7.7482506
-## 26  10.2722646
-## 9   10.2380725
-## 45 -21.6730280
-## 46  -9.6661896
-## 29 -19.7140585
-## 3   -7.7824427
-## 39 -31.6935433
-## 25 -17.7277354
-## 44  -5.6798664
-## 15  -3.7482506
-## 8    2.2380725
-## 2   10.1970420
-## 38   8.2996183
-## 10 -10.7550891
-## 42  -7.6935433
-## 12 -17.7482506
-## 34  20.2927799
-## 1    2.1970420
-## 28  -7.7208969
-## 5    0.2243957
+## 15  -2.7603005
+## 39 -28.6818550
+## 20 -12.2406891
+## 42  -4.6818550
+## 44  -2.1622436
+## 3   -8.0593289
+## 24 -21.9808834
+## 49  44.3573678
+## 46  -5.6426322
+## 19  11.4995052
+## 43   3.3181450
+## 18  -0.5004948
+## 26  12.0191166
+## 22  21.7593109
+## 4    9.9406711
+## 32 -11.2014664
+## 9   10.7200882
+## 2    9.1612540
+## 11   0.9798938
+## 30  -9.4612720
+## 27 -13.7210777
+## 21  -2.2406891
+## 40 -12.6818550
+## 31   0.5387280
+## 28  -5.7210777
+## 38  11.0583393
+## 14  -6.7603005
+## 47  16.3573678
+## 7   -5.2799118
+## 36 -20.9416607
+## 48  17.3573678
+## 25 -15.9808834
+## 13 -10.7603005
+## 23  41.7593109
+## 1    1.1612540
+## 8    2.7200882
+## 35  30.7985336
+## 45 -17.9024379
+## 29 -17.4612720
+## 41  -8.6818550
 ```
 
 ```r
@@ -545,16 +522,16 @@ ds.test[, c('X', 'Y', 'Y_predicted')]
 
 ```
 ##     X  Y Y_predicted
-## 6   9 10    19.76877
-## 13 12 20    31.74825
-## 19 13 46    35.74141
-## 20 14 26    39.73457
-## 24 15 20    43.72774
-## 27 16 32    47.72090
-## 30 17 40    51.71406
-## 32 18 42    55.70722
-## 40 20 48    63.69354
-## 41 20 52    63.69354
+## 5   8 16    15.79952
+## 6   9 10    19.53972
+## 10 11 17    27.02011
+## 12 12 14    30.76030
+## 16 13 26    34.50049
+## 17 13 34    34.50049
+## 33 18 56    53.20147
+## 34 18 76    53.20147
+## 37 19 46    56.94166
+## 50 25 85    79.38283
 ```
 
 ```r
@@ -562,7 +539,7 @@ plot(ds.test$X, ds.test$Y, xlab = ds.predictor.variable, ylab = ds.response.vari
 abline(ds.training.fit)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
 ds.training.fit$coefficients
@@ -570,7 +547,7 @@ ds.training.fit$coefficients
 
 ```
 ## (Intercept)           X 
-##  -16.169688    3.993162
+##  -14.122031    3.740194
 ```
 
 ```r
@@ -579,7 +556,7 @@ ds.training.fit$coefficients[1] #intercept
 
 ```
 ## (Intercept) 
-##   -16.16969
+##   -14.12203
 ```
 
 ```r
@@ -588,7 +565,7 @@ ds.training.fit$coefficients[2] #slope
 
 ```
 ##        X 
-## 3.993162
+## 3.740194
 ```
 
 ```r
@@ -598,7 +575,7 @@ ggplot(ds.test, aes(x = X, y = Y)) +
   labs(x=ds.predictor.variable, y=ds.response.variable)
 ```
 
-![](PredictiveAnalysis_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
 
 ```r
 #single value prediction
@@ -609,13 +586,13 @@ data.frame(X=ds.example.need.to.predict, ds.example.predicted)
 
 ```
 ##    X ds.example.predicted
-## 1 25             83.65935
-## 2 26             87.65251
-## 3 27             91.64567
-## 4 28             95.63884
-## 5 29             99.63200
-## 6 30            103.62516
+## 1 25             79.38283
+## 2 26             83.12302
+## 3 27             86.86322
+## 4 28             90.60341
+## 5 29             94.34360
+## 6 30             98.08380
 ```
 
 
-####Multiple regression / multivariate regression
+

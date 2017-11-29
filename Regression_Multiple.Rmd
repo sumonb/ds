@@ -1,0 +1,40 @@
+---
+title: "Regression - Simple Linear Regression"
+author: "Sumon Barua"
+output:
+  html_document:
+    keep_md: true
+
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("gridExtra")
+library(tidyverse)
+library(gridExtra)
+```
+
+
+####Multiple Regression / Multivariate Regression
+
+* As name suggests, when more than one idepedent variables are used predict a single variable - we call it Multiple Regression
+
+```{r}
+
+# ds.response.variable <- "dist"
+# ds.predictor.variable <- "speed"
+# ds.source <- cars
+# ds.example.need.to.predict <- c(25,26,27,28,29,30)
+# 
+
+#-------------------
+
+
+```
+
+
