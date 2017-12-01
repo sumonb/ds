@@ -139,6 +139,7 @@ ggplot(diamonds, aes(x=carat, y=price)) +
 * Density plot :Distribustion of independent variable
 * The most useful way to plot the residuals, though, is with your predicted values on the x-axis, and your residuals on the y-axis. The distance from the line at 0 is how bad the prediction was for that value
 
+*Residuals : Difference between the actual observed and predicted values from your regression. Distribution of the residuals look like symmetrical/normally distributed/close to 0, that indicates good thing about the model.
 
 
 ```r
@@ -191,12 +192,6 @@ summary(ds)
 ```
 
 ```r
-plot(cars)
-```
-
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
-
-```r
 p1 <- ggplot(ds, aes(x=X, y=Y)) +
   geom_point() +
   labs(x=ds.predictor.variable, y=ds.response.variable)
@@ -213,7 +208,7 @@ grid.arrange(p1, p2, ncol=2)
 ## `geom_smooth()` using method = 'loess'
 ```
 
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 ```r
 #normality check
@@ -224,7 +219,7 @@ qqnorm(ds$Y, xlab = ds.response.variable)
 qqline(ds$Y)
 ```
 
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
 
 ```r
 #outliers
@@ -233,7 +228,7 @@ boxplot(ds$X, main=ds.predictor.variable)
 boxplot(ds$Y, main=ds.response.variable)
 ```
 
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
 
 ```r
 #check normal distribution
@@ -261,7 +256,7 @@ grid.arrange(p1, p2, ncol=2)
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-4.png)<!-- -->
 
 ```r
 #correlation
@@ -368,15 +363,35 @@ p1 <- ggplot(model_simplelm, aes(x = X, y = Y)) +
         geom_smooth(method = lm) +
         labs(x=ds.predictor.variable, y= ds.response.variable)
 
-p2 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_Residuals)) +
+p2 <- ggplot(ds, aes(x = X, y = Y)) +
+    geom_point() +
+    geom_abline(intercept = model_simplelm$coefficients[1], slope = model_simplelm$coefficients[2]) +
+    labs(x=ds.predictor.variable, y=ds.response.variable)
+
+p3 <- ggplot(model_simplelm, aes( x = ds$Y_WholeDS_Prediction, y = ds$Y_WholeDS_Residuals)) +
         geom_point() +
         geom_hline( yintercept = 0, linetype = "dashed" ) +
         labs(x=paste0('Predicted :', ds.response.variable), y=paste0('Residuals :' , ds.response.variable))
 
-grid.arrange(p1, p2, ncol = 2)
+p4 <- ggplot(ds, aes(x = Y_WholeDS_Residuals)) +
+  geom_histogram(aes(y = ..density..), colour="black", fill="white") +
+  geom_density(alpha=.2, fill="#FF6666") +
+  geom_vline(aes(xintercept=mean(Y_WholeDS_Residuals, na.rm = T)), color="red", linetype="dashed", size=1)
+
+# grid.arrange(
+#   grid.arrange(p1, p2, ncol = 2),
+#   grid.arrange(p3, ncol = 1) ,
+#     nrow = 2
+# )
+
+grid.arrange(p1,p2,p3,p4, layout_matrix = rbind(c(1,2),c(3,4)))
 ```
 
-![](Regession_Simple_files/figure-html/unnamed-chunk-3-6.png)<!-- -->
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](Regession_Simple_files/figure-html/unnamed-chunk-3-5.png)<!-- -->
 
 ####Predicting Simple linear model
 
